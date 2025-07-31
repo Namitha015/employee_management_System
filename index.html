@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .profile-section {
+            position: absolute;
+            left: 1135px;
+            top: 20px;
+        }
+
+        .profile-icon {
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: #fff;
+            transition: all 0.3s ease;
+        
+        }
+
+        .profile-icon:hover {
+            color: #4CAF50;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 5px;
+            padding: 10px;
+            left: 0;
+            top: 40px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .dropdown a {
+            color: #333;
+            text-decoration: none;
+            display: block;
+            padding: 5px 0;
+        }
+
+        .dropdown a:hover {
+            color: #4CAF50;
+        }
+
+        .content {
+            flex: 1;
+            margin-left: 10px;
+        }
+        
+        .form-container {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            box-shadow: 0 0 5px #4CAF50;
+        }
+        
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        #addBtn {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .success {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .error {
+            background: #F44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile-section">
+            <i class="fas fa-user-circle profile-icon" onclick="toggleDropdown()"></i>
+            <div class="dropdown" id="profileDropdown">
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </div>
+        <div class="content">
+            <h1>Employee Management System</h1>
+            <div class="result">
+                <form id="employeeForm" method="POST">
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" placeholder="Enter name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="department">Department:</label>
+                        <input type="text" id="department" placeholder="Enter department" name="department" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="salary">Salary ($):</label>
+                        <input type="number" id="salary" placeholder="Enter salary" name="salary" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact">Contact:</label>
+                        <input type="text" id="contact" placeholder="Enter contact" name="contact" required>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" id="addBtn">Add Employee</button>
+                    </div>
+                </form>
+            </div>
+            <div id="result" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById("profileDropdown");
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        }
+
+        function logout() {
+            // Perform logout via PHP then redirect to login.html
+            fetch("logout.php", { method: "POST" })
+                .then(() => {
+                    window.location.href = "login.html";
+                })
+                .catch(error => {
+                    console.error("Logout error:", error);
+                    // Redirect anyway in case of error
+                    window.location.href = "login.html";
+                });
+        }
+
+        document.getElementById("employeeForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+        
+            let name = document.getElementById("name").value.trim();
+            let department = document.getElementById("department").value.trim();
+            let salary = document.getElementById("salary").value.trim();
+            let contact = document.getElementById("contact").value.trim();
+        
+            let formData = new FormData();
+            formData.append("name", name);
+            formData.append("department", department);
+            formData.append("salary", salary);
+            formData.append("contact", contact);
+        
+            try {
+                let response = await fetch("employee.php", {
+                    method: "POST",
+                    body: formData
+                });
+        
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+        
+                let data = await response.json();
+        
+                let resultDiv = document.getElementById("result");
+                resultDiv.innerHTML = `
+                    <div style="padding: 10px; color: ${data.status === 'Success' ? 'green' : 'red'}; background: #f0f0f0; border-radius: 5px;">
+                        ${data.message}
+                    </div>
+                `;
+        
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById("result").innerHTML = `
+                    <div style="color: red;">Something went wrong: ${error.message}</div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
